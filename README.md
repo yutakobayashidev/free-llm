@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# free-llm
 
-## Getting Started
+これは、YUTA STUDIO (Discordサーバー)に参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。金銭的な理由、または他の制約で高度な言語モデルを使用できない場合などの機会損失を防ぐために作られました。 OpenAIやオープンソースモデルなどが利用できます。
 
-First, run the development server:
+また、声入力やふりがななどのアクセシビリティ機能も搭載しています。
+
+## なぜ認証を設けているのか？
+
+似たような前例の取り組みでは、APIエンドポイントの攻撃で予算が使い切られてしまう事例がありました。そこで、一定のエンドポイントのRedisキャッシュやアカウントの認証が必要と考えています。
+
+また認証プロバイダーにDisocrdを使用しているのはコミュニケーションと拡張性を円滑にするためです。
+
+## 使用方法
+
+私のDisocrdサーバーに参加してページからDisocrdにログインすると使用できます。
+
+しかし、GPT4などの高度なモデルを使用できない環境の方を目的に作成していますので、金銭的に余裕がある方はこのプロジェクトをクローンやフォークして似たような取り組みをしていただけると嬉しいです。
+
+## 技術スタック
+
+- Next.js
+- shadcn/ui
+- next-auth
+- Neon
+- OpenAI API
+- Vercel AI SDK
+- Langchain
+- Hugging face inference API
+
+## セットアップ
+
+1. GitHubからクローン
+
+コマンドラインでGitHubからローカルにプロジェクトをダウンロードします。
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+git clone https://github.com/yutakobayashidev/free-llm.git
+```
+
+2. 環境変数をセットする
+
+APIキーやデータベースに接続するために環境変数をセットします。.env.exampleファイルをコピーして環境変数を埋めていきます。
+
+```bash
+cp .env.example .env
+```
+
+3. 依存関係のインストールと開発サーバーの起動
+
+パッケージマネージャーには[Bun](https://bun.sh)を使っています。もしインストールしていない場合は行ってください。
+
+```bash
+cd chatbot-ui
+bun i
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. デプロイ
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+VercelやNetlifyなどにデプロイすることをおすすめします。基本無償で使用できます。
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+https://vercel.com/docs/deployments/overview
 
-## Learn More
+## 貢献・要望
 
-To learn more about Next.js, take a look at the following resources:
+プルリクエストを歓迎しています。また、要望だけでもIssueを作成していただければできる限り対応します。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ライセンス
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+MIT
