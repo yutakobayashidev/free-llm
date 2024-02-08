@@ -11,6 +11,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@auth/core": "^0.26.3",
     "@auth/drizzle-adapter": "^0.6.3",
     "@hookform/resolvers": "^3.3.4",
     "@neondatabase/serverless": "^0.8.1",

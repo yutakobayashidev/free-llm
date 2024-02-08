@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@auth/core':
+    specifier: ^0.26.3
+    version: 0.26.3
   '@auth/drizzle-adapter':
     specifier: ^0.6.3
     version: 0.6.3
@@ -63,7 +66,7 @@ dependencies:
     version: 14.1.0(@babel/core@7.23.9)(react-dom@18.0.0)(react@18.0.0)
   next-auth:
     specifier: beta
-    version: 5.0.0-beta.8(next@14.1.0)(react@18.0.0)
+    version: 5.0.0-beta.9(next@14.1.0)(react@18.0.0)
   openai:
     specifier: ^4.26.1
     version: 4.26.1
@@ -150,29 +153,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.22
-
-  /@auth/core@0.26.2:
-    resolution: {integrity: sha512-BK+NaUDLcX8AMW/O32wxzk+SE9lr/xvjO4PsTgla9ToHHanoPMl+6pYu2/WoNKnZomdHBWOl/00LFfajuulIVA==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.1
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
-        optional: true
-      nodemailer:
-        optional: true
-    dependencies:
-      '@panva/hkdf': 1.1.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.2.1
-      oauth4webapi: 2.10.3
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
-    dev: false
 
   /@auth/core@0.26.3:
     resolution: {integrity: sha512-Ka6rMjWMdiQCvLW/CnYZxj4Rq2bhQ/ZtU32NLxmtyAaixGb0mRXQ9MxJUBZA7GHovbghdzu55p2Cb54qNlVFzw==}
@@ -5165,8 +5145,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /next-auth@5.0.0-beta.8(next@14.1.0)(react@18.0.0):
-    resolution: {integrity: sha512-KRO3VBngzuxnfHhacXvp4lKa9afoE73D3Q4EiMSuQIKrg2KVFfB/uTRVro4Pjnhr/TzLqYZoaiJBfGpyhgby2Q==}
+  /next-auth@5.0.0-beta.9(next@14.1.0)(react@18.0.0):
+    resolution: {integrity: sha512-BWFiwJ/wzfxWpHnGpAoFsXHSlVofWgFns6tjtIGeDrXfEf3D+afnBpmzCNyek2RNYDVgMHi8Q5uXzFoNBd2l5g==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.1
@@ -5181,7 +5161,7 @@ packages:
       nodemailer:
         optional: true
     dependencies:
-      '@auth/core': 0.26.2
+      '@auth/core': 0.26.3
       next: 14.1.0(@babel/core@7.23.9)(react-dom@18.0.0)(react@18.0.0)
       react: 18.0.0
     dev: false
