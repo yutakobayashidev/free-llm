@@ -255,8 +255,12 @@ export default function Chat({ session }: { session: Session }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button type="button" className="flex items-center">
-                    <img className="w-10 mr-3 rounded-sm border h-10" alt={session.user.name ?? "no"} src={session.user.image ?? "/"} />
-                    <p className="font-medium">{session.user.name}</p>
+                    <img
+                      className="w-10 mr-3 rounded-sm border h-10"
+                      alt={session.user?.name ?? "不明なユーザー"}
+                      src={session.user?.image ?? "https://via.placeholder.com/150"}
+                    />
+                    <p className="font-medium">{session.user?.name ?? "不明なユーザー"}</p>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -280,7 +284,7 @@ export default function Chat({ session }: { session: Session }) {
                 {messages.length === 0 ? (
                   <div className="border px-4 py-6 rounded-md">
                     <h2 className="text-2xl mb-5 items-center font-bold leading-tight tracking-tighter">
-                      <span className="mr-2">👋</span> Welcome {session.user.name}!
+                      <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
                     </h2>
                     <p className="mb-3 text-muted-foreground">
                       これは、YUTA
