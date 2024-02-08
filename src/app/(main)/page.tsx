@@ -1,4 +1,4 @@
-import Chat from "@/app/chat";
+import Chat from "@/app/(main)/chat";
 import { auth } from "@/auth";
 import { nanoid } from "@/lib/utils";
 
