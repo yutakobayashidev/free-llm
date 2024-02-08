@@ -47,12 +47,12 @@ cp .env.example .env
 
 3. 依存関係のインストールと開発サーバーの起動
 
-パッケージマネージャーには[Bun](https://bun.sh)を使っています。もしインストールしていない場合は行ってください。
+パッケージマネージャーにはpnpmを使っています。もしインストールしていない場合は行ってください。
 
 ```bash
-cd chatbot-ui
-bun i
-bun dev
+cd free-llm
+pnpm i
+pnpm dev
 ```
 
 4. デプロイ
