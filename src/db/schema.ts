@@ -1,9 +1,25 @@
 import type { AdapterAccount } from "@auth/core/adapters";
-import { neon, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { relations } from "drizzle-orm";
 import { integer, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 
-neonConfig.fetchConnectionCache = true;
+export const chats = pgTable("chat", {
+  id: text("id").notNull().primaryKey(),
+  title: text("title").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  publishStatus: text("publish_status", { enum: ["private", "public", "guild", "deleted"] }).notNull(),
+});
+
+export const messages = pgTable("message", {
+  id: text("id").notNull().primaryKey(),
+  chatId: text("chatId")
+    .notNull()
+    .references(() => chats.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  role: text("role").notNull(),
+});
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -12,6 +28,25 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  chats: many(chats),
+}));
+
+export const chatsRelations = relations(chats, ({ one, many }) => ({
+  user: one(users, {
+    fields: [chats.userId],
+    references: [users.id],
+  }),
+  messages: many(messages),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  post: one(chats, {
+    fields: [messages.chatId],
+    references: [chats.id],
+  }),
+}));
 
 export const accounts = pgTable(
   "account",
@@ -58,6 +93,3 @@ export const verificationTokens = pgTable(
 if (!process.env.POSTGRES_URL) {
   throw new Error("POSTGRES_URL is not set");
 }
-
-const sql = neon(process.env.POSTGRES_URL);
-export const db = drizzle(sql);

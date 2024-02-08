@@ -1,4 +1,4 @@
-import { db } from "@/db/schema";
+import { db } from "@/db/client";
 import { Guild } from "@/types";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import type { NextAuthConfig } from "next-auth";

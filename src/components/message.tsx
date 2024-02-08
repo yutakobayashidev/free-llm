@@ -12,13 +12,21 @@ export default function Message({
   ruby,
 }: { message: MessageType; session: Session; isRuby: boolean; ruby?: string }) {
   return (
-    <div className="flex justify-start">
+    <>
       {message.role === "assistant" ? (
         <div className="flex items-start justify-start">
           <div className="h-10 border mr-3 flex rounded justify-center items-center w-10">
             <OpenAI className="h-6 w-6" />
           </div>
-          <Markdown rehypePlugins={[rehypeRaw]} className="prose break-words prose-p:leading-relaxed prose-pre:p-0 flex-1">
+          <Markdown
+            components={{
+              p({ children }) {
+                return <p className="last:mb-0 first:mt-0">{children}</p>;
+              },
+            }}
+            rehypePlugins={[rehypeRaw]}
+            className="prose break-words prose-p:leading-relaxed prose-pre:p-0 flex-1"
+          >
             {isRuby && ruby ? ruby : message.content}
           </Markdown>
         </div>
@@ -31,11 +39,19 @@ export default function Message({
               <UserRound className="h-6 w-6" />
             </div>
           )}
-          <Markdown className="prose break-words prose-p:leading-relaxed prose-pre:p-0 flex-1" rehypePlugins={[rehypeRaw]}>
+          <Markdown
+            components={{
+              p({ children }) {
+                return <p className="mb-2 last:mb-0 first:mt-0">{children}</p>;
+              },
+            }}
+            className="prose break-words prose-p:leading-relaxed prose-pre:p-0 flex-1"
+            rehypePlugins={[rehypeRaw]}
+          >
             {message.content}
           </Markdown>
         </div>
       )}
-    </div>
+    </>
   );
 }

@@ -31,6 +31,7 @@
     "jotai": "^2.6.4",
     "kuromoji": "^0.1.2",
     "lucide-react": "^0.323.0",
+    "nanoid": "^5.0.5",
     "next": "14.1.0",
     "next-auth": "beta",
     "openai": "^4.26.1",

@@ -1,5 +1,9 @@
 import Chat from "@/app/chat";
 import { auth } from "@/auth";
+import { db } from "@/db/client";
+import * as schema from "@/db/schema";
+import { nanoid } from "@/lib/utils";
+import { eq, or } from "drizzle-orm";
 
 export default async function Page() {
   const session = await auth();
@@ -8,5 +12,15 @@ export default async function Page() {
     return null;
   }
 
-  return <Chat session={session} />;
+  const id = nanoid();
+
+  await db.query.chats.findMany({
+    where: or(eq(schema.chats.publishStatus, "guild"), eq(schema.chats.publishStatus, "public")),
+    with: {
+      user: true,
+      messages: true,
+    },
+  });
+
+  return <Chat id={id} session={session} />;
 }

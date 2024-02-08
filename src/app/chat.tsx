@@ -154,7 +154,7 @@ export function ModelSelector({ models }: { models: Model[] }) {
   );
 }
 
-export default function Chat({ session }: { session: Session }) {
+export default function Chat({ session, id }: { session: Session; id: string }) {
   const apiKey = useAtomValue(apiKeyAtom);
   const system = useAtomValue(systemPromptAtom);
   const model = useAtomValue(modelAtom);
@@ -162,10 +162,12 @@ export default function Chat({ session }: { session: Session }) {
   const { isTokenizerReady, tokenizer } = useKuromoji();
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
+    id,
     body: {
       model,
       api_key: apiKey,
       system,
+      id,
     },
     onError: (err) => {
       toast.error(err.message);
