@@ -8,7 +8,7 @@ import { eq, or } from "drizzle-orm";
 export default async function Page() {
   const session = await auth();
 
-  if (!session) {
+  if (!session?.user?.id) {
     return null;
   }
 
@@ -22,5 +22,9 @@ export default async function Page() {
     },
   });
 
-  return <Chat id={id} session={session} />;
+  const chats = await db.query.chats.findMany({
+    where: eq(schema.chats.userId, session.user.id),
+  });
+
+  return <Chat id={id} chats={chats} session={session} />;
 }

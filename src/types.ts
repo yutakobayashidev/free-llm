@@ -7,3 +7,11 @@ export type Guild = {
   permissions: number;
   permissions_new: string;
 };
+
+export type Chat = {
+  id: string;
+  title: string;
+  userId: string;
+  createdAt: Date;
+  publishStatus: "private" | "public" | "guild" | "deleted";
+};

@@ -15,9 +15,10 @@ import { useCopyToClipboard } from "@/hooks/copy";
 import { useKuromoji } from "@/hooks/useKuromoji";
 import { cn } from "@/lib/utils";
 import { isKanji, kanaToHira } from "@/lib/utils";
+import type { Chat as ChatType } from "@/types";
 import { useChat } from "ai/react";
 import { useAtom, useAtomValue } from "jotai";
-import { Check, ChevronUp } from "lucide-react";
+import { Check, ChevronUp, MessageSquare } from "lucide-react";
 import { Copy } from "lucide-react";
 import { LogOut, Settings } from "lucide-react";
 import type { Session } from "next-auth";
@@ -154,7 +155,7 @@ export function ModelSelector({ models }: { models: Model[] }) {
   );
 }
 
-export default function Chat({ session, id }: { session: Session; id: string }) {
+export default function Chat({ session, id, chats }: { session: Session; id: string; chats: ChatType[] }) {
   const apiKey = useAtomValue(apiKeyAtom);
   const system = useAtomValue(systemPromptAtom);
   const model = useAtomValue(modelAtom);
@@ -276,6 +277,19 @@ export default function Chat({ session, id }: { session: Session; id: string }) 
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            </div>
+            <div className="px-4">
+              <h2 className="mb-3 font-semibold">メッセージ履歴</h2>
+              <div className="space-y-4">
+                {chats.map((chat) => (
+                  <div key={chat.id}>
+                    <h2 className="text-sm line-clamp-1 flex items-start font-medium">
+                      <MessageSquare className="mr-2" />
+                      {chat.title}
+                    </h2>
+                  </div>
+                ))}
+              </div>
             </div>
           </ResizablePanel>
           <ResizableHandle />
