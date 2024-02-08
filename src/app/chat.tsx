@@ -5,29 +5,22 @@ import { Icons } from "@/components/icons";
 import Message from "@/components/message";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Textarea } from "@/components/ui/textarea";
 import { useCopyToClipboard } from "@/hooks/copy";
 import { useKuromoji } from "@/hooks/useKuromoji";
 import { cn } from "@/lib/utils";
 import { isKanji, kanaToHira } from "@/lib/utils";
-import type { Chat as ChatType } from "@/types";
 import { useChat } from "ai/react";
 import { useAtom, useAtomValue } from "jotai";
-import { Check, ChevronUp, MessageSquare } from "lucide-react";
+import { Check, ChevronUp } from "lucide-react";
 import { Copy } from "lucide-react";
-import { LogOut, Settings } from "lucide-react";
 import type { Session } from "next-auth";
-import { signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import APIDialog from "./api-key";
-import SystemPrompt from "./system-prompt";
 
 export interface Model {
   id: number;
@@ -155,7 +148,7 @@ export function ModelSelector({ models }: { models: Model[] }) {
   );
 }
 
-export default function Chat({ session, id, chats }: { session: Session; id: string; chats: ChatType[] }) {
+export default function Chat({ session, id }: { session: Session; id: string }) {
   const apiKey = useAtomValue(apiKeyAtom);
   const system = useAtomValue(systemPromptAtom);
   const model = useAtomValue(modelAtom);
@@ -176,7 +169,6 @@ export default function Chat({ session, id, chats }: { session: Session; id: str
   });
 
   const [copied, copyToClipboard] = useCopyToClipboard();
-  const [openSystemModal, setSystemModal] = useState(false);
   const [lastReadPosition, setLastReadPosition] = useState(0);
 
   const [isRuby, setIsRuby] = useState(false);
@@ -244,108 +236,53 @@ export default function Chat({ session, id, chats }: { session: Session; id: str
 
   return (
     <>
-      <div className="flex min-h-screen">
-        <ResizablePanelGroup className="flex h-full" direction="horizontal">
-          <ResizablePanel
-            className="bg-[#F9F9F9] min-h-screen"
-            defaultSize={20}
-            collapsedSize={4}
-            collapsible={true}
-            minSize={15}
-            maxSize={20}
-          >
-            <div className="px-4 py-6 flex flex-col gap-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button type="button" className="flex items-center">
-                    <img
-                      className="w-10 mr-3 rounded-sm border h-10"
-                      alt={session.user?.name ?? "不明なユーザー"}
-                      src={session.user?.image ?? "https://via.placeholder.com/150"}
-                    />
-                    <p className="font-medium">{session.user?.name ?? "不明なユーザー"}</p>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setSystemModal(true)}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    システムプロンプトを設定
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    ログアウト
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="px-4">
-              <h2 className="mb-3 font-semibold">メッセージ履歴</h2>
-              <div className="space-y-4">
-                {chats.map((chat) => (
-                  <div key={chat.id}>
-                    <h2 className="text-sm line-clamp-1 flex items-start font-medium">
-                      <MessageSquare className="mr-2" />
-                      {chat.title}
-                    </h2>
-                  </div>
-                ))}
+      <div className="main-content w-full overflow-y-auto py-5 px-10">
+        <ModelSelector models={models} />
+        <div className="mt-6">
+          {messages.length === 0 ? (
+            <div className="border px-4 py-6 rounded-md">
+              <h2 className="text-2xl mb-5 items-center font-bold leading-tight tracking-tighter">
+                <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
+              </h2>
+              <p className="mb-3 text-muted-foreground">
+                これは、YUTA
+                STUDIOに参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。OpenAIやオープンソースモデルなどが利用できます。
+              </p>
+              <div className="space-y-2">
+                <button onClick={() => copyToClipboard("Discordサーバーの招待リンク")} className="flex items-center" type="button">
+                  <Copy className="mr-2 h-4 w-4" />
+                  {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
+                </button>
+                <a href="https://github.com/yutakobayashidev/free-llm" className="flex items-center">
+                  <Icons.gitHub className="mr-2 h-4 w-4" />
+                  GitHubで貢献する
+                </a>
               </div>
             </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel className="min-h-screen" defaultSize={80}>
-            <div className="main-content w-full overflow-y-auto py-5 px-10">
-              <ModelSelector models={models} />
-              <div className="mt-6">
-                {messages.length === 0 ? (
-                  <div className="border px-4 py-6 rounded-md">
-                    <h2 className="text-2xl mb-5 items-center font-bold leading-tight tracking-tighter">
-                      <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
-                    </h2>
-                    <p className="mb-3 text-muted-foreground">
-                      これは、YUTA
-                      STUDIOに参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。OpenAIやオープンソースモデルなどが利用できます。
-                    </p>
-                    <div className="space-y-2">
-                      <button onClick={() => copyToClipboard("Discordサーバーの招待リンク")} className="flex items-center" type="button">
-                        <Copy className="mr-2 h-4 w-4" />
-                        {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
-                      </button>
-                      <a href="https://github.com/yutakobayashidev/free-llm" className="flex items-center">
-                        <Icons.gitHub className="mr-2 h-4 w-4" />
-                        GitHubで貢献する
-                      </a>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {messages.map((message, i) => (
-                      <Message isRuby={isRuby} ruby={ruby[i]?.content} session={session} key={message.id} message={message} />
-                    ))}
-                  </div>
-                )}
-              </div>
-              <form className="w-full py-5" onSubmit={handleSubmit}>
-                <Textarea
-                  value={input}
-                  onChange={handleInputChange}
-                  placeholder="Answer to the Ultimate Question of Life, the Universe, and Everything"
-                />
-                <div className="flex gap-x-3">
-                  <Button className="mt-5" type="submit">
-                    送信
-                  </Button>
-                  <Button type="button" disabled={!isTokenizerReady} onClick={() => setIsRuby(!isRuby)} variant="outline" className="mt-5">
-                    {isRuby ? "ふりがなを非表示" : "ふりがなを表示"}
-                  </Button>
-                </div>
-              </form>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((message, i) => (
+                <Message isRuby={isRuby} ruby={ruby[i]?.content} session={session} key={message.id} message={message} />
+              ))}
             </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+          )}
+        </div>
+        <form className="w-full py-5" onSubmit={handleSubmit}>
+          <Textarea
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Answer to the Ultimate Question of Life, the Universe, and Everything"
+          />
+          <div className="flex gap-x-3">
+            <Button className="mt-5" type="submit">
+              送信
+            </Button>
+            <Button type="button" disabled={!isTokenizerReady} onClick={() => setIsRuby(!isRuby)} variant="outline" className="mt-5">
+              {isRuby ? "ふりがなを非表示" : "ふりがなを表示"}
+            </Button>
+          </div>
+        </form>
       </div>
-      <APIDialog />
-      <SystemPrompt openSystemModal={openSystemModal} setOpenSystemModal={setSystemModal} />
     </>
   );
 }

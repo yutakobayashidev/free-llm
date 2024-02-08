@@ -1,21 +1,24 @@
 import { auth } from "@/auth";
 
-const authRoutes = ["/login"];
-
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-
   const { nextUrl } = req;
 
-  const isAuthRoute = authRoutes.some((prefix) => req.nextUrl.pathname.startsWith(prefix));
+  // next-auth関連のルートをチェック
+  const isNextAuthRoute = nextUrl.pathname.startsWith("/api/auth/");
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return Response.redirect(new URL("/", nextUrl));
-    }
+  // next-authのルートは認証チェックから除外
+  if (isNextAuthRoute) {
+    return; // 何もせずに処理を続行
   }
 
-  if (!isLoggedIn && nextUrl.pathname === "/") {
+  // ログインページへのアクセス時、既にログインしていればホームページにリダイレクト
+  if (isLoggedIn && nextUrl.pathname === "/login") {
+    return Response.redirect(new URL("/", nextUrl));
+  }
+
+  // ログインしていない状態でログインページ以外にアクセスしようとした場合、ログインページにリダイレクト
+  if (!isLoggedIn && nextUrl.pathname !== "/login") {
     return Response.redirect(new URL("/login", nextUrl));
   }
 });
