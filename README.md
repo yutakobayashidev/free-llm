@@ -65,6 +65,45 @@ https://vercel.com/docs/deployments/overview
 
 プルリクエストを歓迎しています。また、要望だけでもIssueを作成していただければできる限り対応します。
 
+## カスタマイズ
+
+### 特定のGoogle Workspaceのドメインのアカウントのみがログインできるようにする
+
+認証にはAuth.jsを使っているので比較的かんたんにこのようなカスタマイズができます。auth.config.tsを少し編集します。
+
+```ts
+import { db } from "@/db/client";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import type { NextAuthConfig } from "next-auth";
+import Google from "next-auth/providers/google";
+
+export const authConfig: NextAuthConfig = {
+  adapter: DrizzleAdapter(db),
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (account && account.provider === "google" && profile && profile.email) {
+        return profile.email.endsWith("@google.com");
+      }
+      return true;
+    },
+  },
+  pages: {
+    signIn: "/login",
+  },
+};
+```
+
 ## ライセンス
 
 MIT
