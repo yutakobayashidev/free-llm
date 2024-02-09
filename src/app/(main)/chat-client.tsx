@@ -1,20 +1,43 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { cn } from "@/lib/utils";
 import { Chat } from "@/types";
-import { Settings } from "lucide-react";
-import { LogOut } from "lucide-react";
-import { MessageSquare } from "lucide-react";
+import { GalleryThumbnails, Home, LogOut, type LucideIcon, MessageSquare, Plus, Settings } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import APIDialog from "./api-key";
 import SystemPrompt from "./system-prompt";
 
+const links: {
+  title: string;
+  icon: LucideIcon;
+  href: string;
+  variant: "default" | "ghost";
+}[] = [
+  {
+    title: "新規チャット",
+    icon: Plus,
+    href: "/",
+    variant: "default",
+  },
+  {
+    title: "メッセージハブ",
+    icon: GalleryThumbnails,
+    href: "/hub",
+    variant: "ghost",
+  },
+];
+
 export default function ChatLayout({ chats, user, children }: { chats: Chat[]; user: Session["user"]; children: React.ReactNode }) {
   const [openSystemModal, setSystemModal] = useState(false);
+
+  const path = usePathname();
 
   return (
     <>
@@ -51,6 +74,23 @@ export default function ChatLayout({ chats, user, children }: { chats: Chat[]; u
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          <nav className="grid pb-3 gap-1 px-4">
+            {links.map((link, index) => (
+              <Link
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                key={index}
+                href={link.href}
+                className={cn(
+                  buttonVariants({ variant: link.href === path ? "default" : "ghost", size: "sm" }),
+                  link.href === path && "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                  "justify-start",
+                )}
+              >
+                <link.icon className="mr-2 h-4 w-4" />
+                {link.title}
+              </Link>
+            ))}
+          </nav>
           <div className="px-4">
             <h2 className="mb-3 font-semibold">メッセージ履歴</h2>
             <div className="space-y-4">
