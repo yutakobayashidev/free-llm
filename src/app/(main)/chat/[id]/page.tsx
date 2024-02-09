@@ -6,8 +6,6 @@ import { Message } from "ai";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
-export const runtime = "edge";
-
 export default async function Page({
   params,
 }: {
