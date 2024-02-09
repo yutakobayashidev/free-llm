@@ -4,6 +4,7 @@ import { apiKeyAtom, modelAtom, systemPromptAtom } from "@/atom";
 import { Icons } from "@/components/icons";
 import Message from "@/components/message";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
@@ -250,25 +251,29 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
         <ModelSelector models={models} />
         <div className="mt-6">
           {messages.length === 0 ? (
-            <div className="border px-4 py-6 rounded-md">
-              <h2 className="text-2xl mb-5 items-center font-bold leading-tight tracking-tighter">
-                <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
-              </h2>
-              <p className="mb-3 text-muted-foreground">
-                これは、YUTA
-                STUDIOに参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。OpenAIやオープンソースモデルなどが利用できます。
-              </p>
-              <div className="space-y-2">
-                <button onClick={() => copyToClipboard("Discordサーバーの招待リンク")} className="flex items-center" type="button">
-                  <Copy className="mr-2 h-4 w-4" />
-                  {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
-                </button>
-                <a href="https://github.com/yutakobayashidev/free-llm" className="flex items-center">
-                  <Icons.gitHub className="mr-2 h-4 w-4" />
-                  GitHubで貢献する
-                </a>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="mb-3">
+                  <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
+                </CardTitle>
+                <CardDescription>
+                  これは、YUTA
+                  STUDIOに参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。OpenAIやオープンソースモデルなどが利用できます。
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <button onClick={() => copyToClipboard("Discordサーバーの招待リンク")} className="flex items-center" type="button">
+                    <Copy className="mr-2 h-4 w-4" />
+                    {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
+                  </button>
+                  <a href="https://github.com/yutakobayashidev/free-llm" className="flex items-center">
+                    <Icons.gitHub className="mr-2 h-4 w-4" />
+                    GitHubで貢献する
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             <div className="space-y-4">
               {messages.map((message, i) => (
