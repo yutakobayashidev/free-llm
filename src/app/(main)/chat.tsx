@@ -13,11 +13,12 @@ import { useCopyToClipboard } from "@/hooks/copy";
 import { useKuromoji } from "@/hooks/useKuromoji";
 import { cn } from "@/lib/utils";
 import { isKanji, kanaToHira } from "@/lib/utils";
-import { useChat } from "ai/react";
+import { type Message as MessageType, useChat } from "ai/react";
 import { useAtom, useAtomValue } from "jotai";
 import { Check, ChevronUp } from "lucide-react";
 import { Copy } from "lucide-react";
 import type { Session } from "next-auth";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -148,15 +149,18 @@ export function ModelSelector({ models }: { models: Model[] }) {
   );
 }
 
-export default function Chat({ session, id }: { session: Session; id: string }) {
+export default function Chat({ session, id, initialMessages }: { session: Session; id: string; initialMessages?: MessageType[] }) {
   const apiKey = useAtomValue(apiKeyAtom);
   const system = useAtomValue(systemPromptAtom);
   const model = useAtomValue(modelAtom);
 
   const { isTokenizerReady, tokenizer } = useKuromoji();
+  const path = usePathname();
+  const router = useRouter();
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     id,
+    initialMessages,
     body: {
       model,
       api_key: apiKey,
@@ -165,6 +169,11 @@ export default function Chat({ session, id }: { session: Session; id: string }) 
     },
     onError: (err) => {
       toast.error(err.message);
+    },
+    onFinish() {
+      if (!path.includes("chat")) {
+        window.history.pushState({}, "", `/chat/${id}`);
+      }
     },
   });
 

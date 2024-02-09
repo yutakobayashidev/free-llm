@@ -4,6 +4,8 @@ import * as schema from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import ChatLayout from "./chat-client";
 
+export const revalidate = 0;
+
 export default async function RootLayout({
   children,
 }: Readonly<{

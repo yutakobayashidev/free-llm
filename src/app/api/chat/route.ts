@@ -3,14 +3,15 @@ import { db } from "@/db/client";
 import * as schema from "@/db/schema";
 import { nanoid } from "@/lib/utils";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { Message } from "ai/react";
 import OpenAI from "openai";
 
 export const runtime = "edge";
 
-type Message = {
-  role: string;
-  content: string;
-};
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 export async function POST(req: Request) {
   const userId = (await auth())?.user?.id;
 
@@ -24,16 +25,16 @@ export async function POST(req: Request) {
 
   const { messages, system, api_key, model } = json;
 
+  if (api_key) {
+    openai.apiKey = api_key;
+  }
+
   if (system) {
     messages.unshift({
       role: "system",
       content: system,
     });
   }
-
-  const openai = new OpenAI({
-    apiKey: api_key ? api_key : process.env.OPENAI_API_KEY,
-  });
 
   try {
     const response = await openai.chat.completions.create({
@@ -50,28 +51,34 @@ export async function POST(req: Request) {
 
         const createdAt = Date.now();
 
-        await db.insert(schema.chats).values({
-          id,
-          title,
-          userId,
-          createdAt: new Date(createdAt),
-          publishStatus: "private",
-        });
+        await db
+          .insert(schema.chats)
+          .values({
+            id,
+            title,
+            userId,
+            createdAt: new Date(createdAt),
+            publishStatus: "private",
+          })
+          .onConflictDoNothing({ target: schema.messages.id });
 
-        await db.insert(schema.messages).values([
-          ...messages.map((message: Message) => ({
-            id: nanoid(),
-            chatId: id,
-            content: message.content,
-            role: message.role,
-          })),
-          {
-            id: nanoid(),
-            chatId: id,
-            content: completion,
-            role: "assistant",
-          },
-        ]);
+        await db
+          .insert(schema.messages)
+          .values([
+            ...messages.map((message: Message) => ({
+              id: nanoid(),
+              chatId: id,
+              content: message.content,
+              role: message.role,
+            })),
+            {
+              id: nanoid(),
+              chatId: id,
+              content: completion,
+              role: "assistant",
+            },
+          ])
+          .onConflictDoNothing({ target: schema.messages.id });
       },
     });
     return new StreamingTextResponse(stream);

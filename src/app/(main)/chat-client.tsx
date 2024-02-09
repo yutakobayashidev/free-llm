@@ -8,6 +8,7 @@ import { LogOut } from "lucide-react";
 import { MessageSquare } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import { useState } from "react";
 import APIDialog from "./api-key";
 import SystemPrompt from "./system-prompt";
@@ -54,12 +55,12 @@ export default function ChatLayout({ chats, user, children }: { chats: Chat[]; u
             <h2 className="mb-3 font-semibold">メッセージ履歴</h2>
             <div className="space-y-4">
               {chats.map((chat) => (
-                <div key={chat.id}>
+                <Link href={`/chat/${chat.id}`} className="block" key={chat.id}>
                   <h2 className="text-sm line-clamp-1 flex items-start font-medium">
                     <MessageSquare className="mr-2" />
                     {chat.title}
                   </h2>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
