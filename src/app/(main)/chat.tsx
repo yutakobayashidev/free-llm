@@ -8,6 +8,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useCopyToClipboard } from "@/hooks/copy";
 import { useKuromoji } from "@/hooks/useKuromoji";
@@ -282,13 +283,12 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
             onChange={handleInputChange}
             placeholder="Answer to the Ultimate Question of Life, the Universe, and Everything"
           />
-          <div className="flex gap-x-3">
-            <Button className="mt-5" type="submit">
-              送信
-            </Button>
-            <Button type="button" disabled={!isTokenizerReady} onClick={() => setIsRuby(!isRuby)} variant="outline" className="mt-5">
-              {isRuby ? "ふりがなを非表示" : "ふりがなを表示"}
-            </Button>
+          <div className="flex items-center mt-5 gap-x-3">
+            <Button type="submit">送信</Button>
+            <div className="flex items-center space-x-2">
+              <Switch disabled={!isTokenizerReady} onCheckedChange={(checked) => setIsRuby(!isRuby)} id="ruby" />
+              <Label htmlFor="ruby"> {isRuby ? "ふりがなを非表示" : "ふりがなを表示"}</Label>
+            </div>
           </div>
         </form>
       </div>
