@@ -3,7 +3,6 @@ import { db } from "@/db/client";
 import * as schema from "@/db/schema";
 import { nanoid } from "@/lib/utils";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { Message } from "ai/react";
 import OpenAI from "openai";
 
 export const runtime = "edge";
@@ -70,15 +69,12 @@ export async function POST(req: Request) {
         });
       },
       async onCompletion(completion) {
-        await db
-          .insert(schema.messages)
-          .values({
-            id: nanoid(),
-            chatId: id,
-            content: completion,
-            role: "assistant",
-          })
-          .onConflictDoNothing({ target: schema.messages.id });
+        await db.insert(schema.messages).values({
+          id: nanoid(),
+          chatId: id,
+          content: completion,
+          role: "assistant",
+        });
       },
     });
     return new StreamingTextResponse(stream);
