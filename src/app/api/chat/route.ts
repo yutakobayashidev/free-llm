@@ -43,41 +43,41 @@ export async function POST(req: Request) {
       messages,
     });
 
+    const title = system ? messages[1].content.substring(0, 100) : messages[0].content.substring(0, 100);
+
+    const id = json.id ?? nanoid();
+
+    await db
+      .insert(schema.chats)
+      .values({
+        id,
+        title,
+        userId,
+        createdAt: new Date(Date.now()),
+        publishStatus: "private",
+      })
+      .onConflictDoNothing({ target: schema.messages.id });
+
+    const lastMessage = messages[messages.length - 1];
+
     const stream = OpenAIStream(response, {
+      async onStart() {
+        await db.insert(schema.messages).values({
+          id: nanoid(),
+          chatId: id,
+          content: lastMessage.content,
+          role: "user",
+        });
+      },
       async onCompletion(completion) {
-        const title = system ? messages[1].content.substring(0, 100) : messages[0].content.substring(0, 100);
-
-        const id = json.id ?? nanoid();
-
-        const createdAt = Date.now();
-
-        await db
-          .insert(schema.chats)
-          .values({
-            id,
-            title,
-            userId,
-            createdAt: new Date(createdAt),
-            publishStatus: "private",
-          })
-          .onConflictDoNothing({ target: schema.messages.id });
-
         await db
           .insert(schema.messages)
-          .values([
-            ...messages.map((message: Message) => ({
-              id: nanoid(),
-              chatId: id,
-              content: message.content,
-              role: message.role,
-            })),
-            {
-              id: nanoid(),
-              chatId: id,
-              content: completion,
-              role: "assistant",
-            },
-          ])
+          .values({
+            id: nanoid(),
+            chatId: id,
+            content: completion,
+            role: "assistant",
+          })
           .onConflictDoNothing({ target: schema.messages.id });
       },
     });
