@@ -3,6 +3,7 @@ import * as schema from "@/db/schema";
 import clsx from "clsx";
 import { desc, eq, or } from "drizzle-orm";
 import { MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 export default async function Page() {
   const chats = await db.query.chats.findMany({
@@ -19,7 +20,7 @@ export default async function Page() {
       <p className="mb-5">公開・サーバーの参加者限定のチャット一覧</p>
       <div className="space-y-5">
         {chats.map((chat) => (
-          <div className="flex justify-between items-center" key={chat.id}>
+          <Link href={`/share/${chat.id}`} className="flex justify-between items-center" key={chat.id}>
             <div className="gap-x-3 flex items-center">
               <img
                 className="w-10 rounded-sm border h-10"
@@ -47,7 +48,7 @@ export default async function Page() {
                 {chat.publishStatus === "guild" ? "サーバー内" : "公開"}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

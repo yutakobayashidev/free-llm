@@ -15,3 +15,5 @@ export type Chat = {
   createdAt: Date;
   publishStatus: "private" | "public" | "guild" | "deleted";
 };
+
+export type PublishStatus = "private" | "public" | "guild" | "deleted";

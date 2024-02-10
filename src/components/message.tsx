@@ -10,7 +10,7 @@ export default function Message({
   session,
   isRuby,
   ruby,
-}: { message: MessageType; session: Session; isRuby: boolean; ruby?: string }) {
+}: { message: MessageType; session?: Session; isRuby?: boolean; ruby?: string }) {
   return (
     <>
       {message.role === "assistant" ? (
@@ -32,7 +32,7 @@ export default function Message({
         </div>
       ) : (
         <div className="flex items-start justify-start">
-          {session.user?.image && session.user.name ? (
+          {session?.user?.image && session.user.name ? (
             <img src={session.user.image} alt={session.user.name} className="h-10 w-10 border mr-3 rounded-sm" />
           ) : (
             <div className="h-10 border mr-3 flex rounded-sm justify-center items-center w-10">
