@@ -99,7 +99,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account && account.provider === "google" && profile && profile.email) {
-        return profile.email.endsWith("@google.com");
+        return profile.email.endsWith("@google.com"); // ここでドメインを指定する
       }
       return true;
     },
