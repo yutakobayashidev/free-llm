@@ -19,6 +19,8 @@ export const messages = pgTable("message", {
     .references(() => chats.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   role: text("role").notNull(),
+  modelId: text("model"),
+  modelProvider: text("model_provider", { enum: ["openai", "huggingface"] }),
 });
 
 export const users = pgTable("user", {

@@ -16,7 +16,7 @@ import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import APIDialog from "./api-key";
 import SystemPrompt from "./system-prompt";
 
@@ -92,12 +92,10 @@ export default function ChatLayout({ chats, user, children }: { chats: Chat[]; u
             </DropdownMenu>
           </div>
           <nav className="grid pb-3 gap-1 px-4">
-            {links.map((link, index) => (
-              <>
+            {links.map((link) => (
+              <Fragment key={link.href}>
                 {link.type === "button" ? (
                   <button
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    key={index}
                     type="button"
                     onClick={link.onClick}
                     className={cn(
@@ -111,8 +109,6 @@ export default function ChatLayout({ chats, user, children }: { chats: Chat[]; u
                   </button>
                 ) : (
                   <Link
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    key={index}
                     href={link.href}
                     className={cn(
                       buttonVariants({ variant: link.href === path ? "default" : "ghost", size: "sm" }),
@@ -124,7 +120,7 @@ export default function ChatLayout({ chats, user, children }: { chats: Chat[]; u
                     {link.title}
                   </Link>
                 )}
-              </>
+              </Fragment>
             ))}
           </nav>
           <div className="px-4">

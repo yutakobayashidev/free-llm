@@ -1,36 +1,29 @@
 "use client";
 
+import HF from "@/assets/logos/hf-logo.svg";
+import OpenAI from "@/assets/logos/openai.svg";
 import { apiKeyAtom, modelAtom, systemPromptAtom } from "@/atom";
-import { Icons } from "@/components/icons";
-import Message from "@/components/message";
+import ChatMessage from "@/components/message";
+import Onboarding from "@/components/onboarding";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { siteConfig } from "@/config/site";
-import { useCopyToClipboard } from "@/hooks/copy";
+import { type Model, models } from "@/config/models";
 import { useKuromoji } from "@/hooks/useKuromoji";
 import { cn } from "@/lib/utils";
 import { isKanji, kanaToHira } from "@/lib/utils";
-import { type Message as MessageType, useChat } from "ai/react";
+import { type Message, useChat } from "ai/react";
 import { useAtom, useAtomValue } from "jotai";
 import { Check, ChevronUp } from "lucide-react";
-import { Copy } from "lucide-react";
 import type { Session } from "next-auth";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-
-export interface Model {
-  id: number;
-  name: string;
-  description: string;
-}
 
 interface ModelItemProps {
   model: Model;
@@ -72,26 +65,18 @@ function ModelItem({ model, isSelected, onSelect, onPeek }: ModelItemProps) {
   });
 
   return (
-    <CommandItem key={model.id} onSelect={onSelect} ref={ref} className="aria-selected:bg-primary aria-selected:text-primary-foreground">
-      {model.name}
+    <CommandItem
+      key={model.id}
+      onSelect={onSelect}
+      ref={ref}
+      className="aria-selected:bg-primary flex items-center aria-selected:text-primary-foreground"
+    >
+      {model.provider === "openai" ? <OpenAI className="h-4 w-4 mr-1" /> : <HF className="h-4 w-4 mr-1" />}
+      <p className="line-clamp-1 text-sm">{model.name}</p>
       <Check className={cn("ml-auto h-4 w-4", isSelected ? "opacity-100" : "opacity-0")} />
     </CommandItem>
   );
 }
-
-export const models: Model[] = [
-  {
-    id: 1,
-    name: "gpt-3.5-turbo",
-    description: "A set of models that improve on GPT-3.5 and can understand as well as generate natural language or code",
-  },
-  {
-    id: 2,
-    name: "gpt-4-0125-preview",
-    description:
-      "The latest GPT-4 model intended to reduce cases of “laziness” where the model doesn’t complete a task. Returns a maximum of 4,096 output tokens.",
-  },
-];
 
 export function ModelSelector({ models }: { models: Model[] }) {
   const [open, setOpen] = useState(false);
@@ -112,7 +97,10 @@ export function ModelSelector({ models }: { models: Model[] }) {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" role="combobox" aria-expanded={open} aria-label="Select a model" className="w-full justify-between">
-            {selectedModel ? selectedModel : "モデルを検索..."}
+            <div className="flex items-center">
+              {peekedModel.provider === "openai" ? <OpenAI className="h-4 w-4 mr-1" /> : <HF className="h-4 w-4 mr-1" />}
+              {selectedModel ? selectedModel : "モデルを検索..."}
+            </div>
             <ChevronUp className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -120,7 +108,10 @@ export function ModelSelector({ models }: { models: Model[] }) {
           <HoverCard>
             <HoverCardContent side="left" align="start" forceMount className="min-h-[280px]">
               <div className="grid gap-2">
-                <h4 className="font-medium leading-none">{peekedModel.name}</h4>
+                <h4 className="font-medium flex items-center leading-none">
+                  {peekedModel.provider === "openai" ? <OpenAI className="h-4 w-4 mr-1" /> : <HF className="h-4 w-4 mr-1" />}
+                  {peekedModel.name}
+                </h4>
                 <div className="text-sm text-muted-foreground">{peekedModel.description}</div>
               </div>
             </HoverCardContent>
@@ -152,14 +143,13 @@ export function ModelSelector({ models }: { models: Model[] }) {
   );
 }
 
-export default function Chat({ session, id, initialMessages }: { session: Session; id: string; initialMessages?: MessageType[] }) {
+export default function Chat({ session, id, initialMessages }: { session: Session; id: string; initialMessages?: Message[] }) {
   const apiKey = useAtomValue(apiKeyAtom);
   const system = useAtomValue(systemPromptAtom);
   const model = useAtomValue(modelAtom);
 
   const { isTokenizerReady, tokenizer } = useKuromoji();
   const path = usePathname();
-  const router = useRouter();
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     id,
@@ -180,7 +170,6 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
     },
   });
 
-  const [copied, copyToClipboard] = useCopyToClipboard();
   const [lastReadPosition, setLastReadPosition] = useState(0);
 
   const [isRuby, setIsRuby] = useState(false);
@@ -252,33 +241,11 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
         <ModelSelector models={models} />
         <div className="mt-6">
           {messages.length === 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="mb-3">
-                  <span className="mr-2">👋</span> Welcome {session.user?.name ?? "不明なユーザー"}!
-                </CardTitle>
-                <CardDescription>
-                  これは、YUTA
-                  STUDIOに参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。OpenAIやオープンソースモデルなどが利用できます。
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <button onClick={() => copyToClipboard(siteConfig.links.invite)} className="flex items-center" type="button">
-                    <Copy className="mr-2 h-4 w-4" />
-                    {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
-                  </button>
-                  <a href={siteConfig.links.github} className="flex items-center">
-                    <Icons.gitHub className="mr-2 h-4 w-4" />
-                    GitHubで貢献する
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
+            <Onboarding user={session.user} />
           ) : (
             <div className="space-y-4">
               {messages.map((message, i) => (
-                <Message isRuby={isRuby} ruby={ruby[i]?.content} session={session} key={message.id} message={message} />
+                <ChatMessage isRuby={isRuby} ruby={ruby[i]?.content} session={session} key={message.id} message={message} />
               ))}
             </div>
           )}
@@ -292,7 +259,7 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
           <div className="flex items-center mt-5 gap-x-3">
             <Button type="submit">送信</Button>
             <div className="flex items-center space-x-2">
-              <Switch disabled={!isTokenizerReady} onCheckedChange={(checked) => setIsRuby(!isRuby)} id="ruby" />
+              <Switch disabled={!isTokenizerReady} onCheckedChange={() => setIsRuby(!isRuby)} id="ruby" />
               <Label htmlFor="ruby"> {isRuby ? "ふりがなを非表示" : "ふりがなを表示"}</Label>
             </div>
           </div>
