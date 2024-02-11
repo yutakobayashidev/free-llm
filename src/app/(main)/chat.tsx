@@ -161,7 +161,7 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
     id,
     initialMessages,
     body: {
-      model,
+      model: model.name,
       api_key: apiKey,
       system,
       id,

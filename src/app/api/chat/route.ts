@@ -88,6 +88,7 @@ export async function POST(req: Request) {
       });
       return new StreamingTextResponse(stream);
     }
+
     if (findProviderByName(model) === "huggingface") {
       const response = Hf.textGenerationStream({
         model,
@@ -125,6 +126,10 @@ export async function POST(req: Request) {
 
       return new StreamingTextResponse(stream);
     }
+
+    return new Response("モデルが見つかりません", {
+      status: 404,
+    });
   } catch (e) {
     return new Response(`問題が発生しました。もう一度お試しください。${api_key ? "APIキーが無効な可能性があります" : ""}`, {
       status: 500,
