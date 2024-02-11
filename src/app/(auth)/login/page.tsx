@@ -16,7 +16,7 @@ export default function Page() {
         </div>
         <UserAuthForm />
         <p className="px-8 text-center text-sm text-muted-foreground">
-          このサービスは${siteConfig.name}のDiscordサーバー参加者に限定されます{" "}
+          このサービスは{siteConfig.name}のDiscordサーバー参加者に限定されます{" "}
         </p>
       </div>
     </div>
