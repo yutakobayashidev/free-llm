@@ -58,7 +58,7 @@ cp .env.example .env
 - DISCORD_GUILD_ID: Discordで開発者モードをONにしてサーバーアイコンを右クリックしてコピーします
 - POSTGRES_URL: https://neon.tech
 - AUTH_SECRET: openssl rand -hex 32 or https://generate-secret.vercel.app/32
-- AUTH_URL: Vercelにデプロイした場合は扶養
+- AUTH_URL: Vercelにデプロイした場合は不要
 
 次に、Neonに接続したらマイグレーションを実行します。
 
