@@ -1,8 +1,15 @@
 # free-llm
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyutakobayashidev%2Ffree-llm&env=OPENAI_API_KEY,AUTH_SECRET,DISCORD_CLIENT_ID,DISCORD_CLIENT_SECRET,DISCORD_GUILD_ID,POSTGRES_URL&envDescription=Discord%E3%81%AEOauth%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%84Neon%E3%81%AEPostgress%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9%E3%82%92%E8%A8%98%E8%BC%89%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&project-name=free-llm&repository-name=free-llm)
+
 これは、[YUTA STUDIO (Discordサーバー)](https://discord.gg/N9qGDX7k9U)に参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。金銭的な理由、または他の制約で高度な言語モデルを使用できない場合などの機会損失を防ぐために作られました。 OpenAIやオープンソースモデルなどが利用できます。
 
-また、声入力やふりがななどのアクセシビリティ機能も搭載しています。
+> [!NOTE]
+> これは[voice-gpt](https://github.com/yutakobayashidev/voice-gpt)の後継プロジェクトです。
+
+## 目的
+
+多くの人がGPT-4モデルやその他の先進的なLLMの価値を十分に理解できていないことがあります。金銭的な問題やその他の事情でこれらのモデルにアクセスできない人もいます。このプロジェクトは、小規模コミュニティが小規模コミュニティのためにLLMアクセスを提供し、予算が限られている状況でも運用できるようにするために設計されました。この仕組みとコードを共有することで、より多くの人がこの取り組みに参加できるようにします。
 
 ## なぜ認証を設けているのか？
 
@@ -99,7 +106,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async signIn({ account, profile }) {
       if (account && account.provider === "google" && profile && profile.email) {
-        return profile.email.endsWith("@google.com");
+        return profile.email.endsWith("@google.com"); // ここでドメインを指定する
       }
       return true;
     },
