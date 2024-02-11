@@ -34,7 +34,7 @@
 - Langchain
 - Hugging face inference API
 
-## セットアップ
+## 開発環境
 
 1. GitHubからクローン
 
@@ -52,6 +52,14 @@ APIキーやデータベースに接続するために環境変数をセット�
 cp .env.example .env
 ```
 
+- OPENAI_API_KEY: https://platform.openai.com/account/api-keys
+- HUGGINGFACE_API_KEY: https://huggingface.co/settings/tokens
+- DISCORD_CLIENT_ID、DISCORD_CLIENT_SECRET: https://discord.com/developers/docs/topics/oauth2
+- DISCORD_GUILD_ID: Discordで開発者モードをONにしてサーバーアイコンを右クリックしてコピーします
+- POSTGRES_URL: https://neon.tech
+- AUTH_SECRET: openssl rand -hex 32 or https://generate-secret.vercel.app/32
+- AUTH_URL: Vercelにデプロイした場合は扶養
+
 次に、Neonに接続したらマイグレーションを実行します。
 
 ```bash
@@ -68,7 +76,7 @@ pnpm i
 pnpm dev
 ```
 
-4. デプロイ
+## デプロイ
 
 VercelやNetlifyなどにデプロイすることをおすすめします。基本無償で使用できます。
 
