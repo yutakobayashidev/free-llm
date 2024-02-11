@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { siteConfig } from "@/config/site";
 import { useCopyToClipboard } from "@/hooks/copy";
 import { useKuromoji } from "@/hooks/useKuromoji";
 import { cn } from "@/lib/utils";
@@ -263,11 +264,11 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <button onClick={() => copyToClipboard("Discordサーバーの招待リンク")} className="flex items-center" type="button">
+                  <button onClick={() => copyToClipboard(siteConfig.links.invite)} className="flex items-center" type="button">
                     <Copy className="mr-2 h-4 w-4" />
                     {copied ? "コピーしました" : "Discordサーバーの招待リンクをコピー"}
                   </button>
-                  <a href="https://github.com/yutakobayashidev/free-llm" className="flex items-center">
+                  <a href={siteConfig.links.github} className="flex items-center">
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                     GitHubで貢献する
                   </a>
