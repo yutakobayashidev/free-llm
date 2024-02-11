@@ -45,6 +45,9 @@ export const authConfig: NextAuthConfig = {
       if (account == null || account.access_token == null) return false;
       return await isJoinGuild(account.access_token);
     },
+    authorized({ auth }) {
+      return !!auth?.user;
+    },
   },
   pages: {
     signIn: "/login",

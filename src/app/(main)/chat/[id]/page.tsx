@@ -4,7 +4,7 @@ import { db } from "@/db/client";
 import * as schema from "@/db/schema";
 import { Message } from "ai";
 import { eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export default async function Page({
   params,
@@ -16,7 +16,7 @@ export default async function Page({
   const session = await auth();
 
   if (!session?.user?.id) {
-    return null;
+    redirect(`/login?next=/chat/${params.id}`);
   }
 
   const chat = await db.query.chats.findFirst({

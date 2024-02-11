@@ -1,9 +1,17 @@
+import { auth } from "@/auth";
 import { UserAuthForm } from "@/components/user-auth-form";
 import { siteConfig } from "@/config/site";
+import { redirect } from "next/navigation";
 
 export const runtime = "edge";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+  // redirect to home if user is already logged in
+  if (session?.user) {
+    redirect("/");
+  }
+
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">

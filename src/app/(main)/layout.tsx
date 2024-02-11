@@ -14,7 +14,11 @@ export default async function RootLayout({
   const session = await auth();
 
   if (!session?.user?.id) {
-    return null;
+    return (
+      <div className="flex min-h-screen">
+        <ChatLayout>{children}</ChatLayout>
+      </div>
+    );
   }
 
   const chats = await db.query.chats.findMany({

@@ -1,7 +1,7 @@
+import { auth } from "@/auth";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -22,6 +22,8 @@ interface SearchParamsProps {
 }
 
 export default async function Page({ searchParams }: SearchParamsProps) {
+  const session = await auth();
+
   const pageNumber = Number(searchParams.page ?? 1);
 
   const numberOfItems = 6;
@@ -29,7 +31,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
   const totalChats = await db
     .select({ count: sql<number>`count(*)` })
     .from(schema.chats)
-    .where(or(eq(schema.chats.publishStatus, "public"), eq(schema.chats.publishStatus, "guild")));
+    .where(or(eq(schema.chats.publishStatus, "public"), session?.user ? eq(schema.chats.publishStatus, "guild") : undefined));
 
   const numberOfPages = Math.ceil(totalChats[0].count / numberOfItems);
 
@@ -46,7 +48,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
   const offsetItems = safePageNumber > 1 ? (safePageNumber - 1) * numberOfItems : 0;
 
   const chats = await db.query.chats.findMany({
-    where: or(eq(schema.chats.publishStatus, "public"), eq(schema.chats.publishStatus, "guild")),
+    where: or(eq(schema.chats.publishStatus, "public"), session?.user ? eq(schema.chats.publishStatus, "guild") : undefined),
     orderBy: [desc(schema.chats.createdAt)],
     with: {
       user: true,
@@ -127,7 +129,10 @@ export default async function Page({ searchParams }: SearchParamsProps) {
               const page = startPage + index;
               return (
                 <PaginationItem key={page}>
-                  <PaginationLink href={`/hub?page=${page}`} className={clsx({ "bg-primary text-white": page === safePageNumber })}>
+                  <PaginationLink
+                    href={`/hub?page=${page}`}
+                    className={clsx({ "bg-primary hover:bg-primary/90 hover:text-white text-white": page === safePageNumber })}
+                  >
                     {page}
                   </PaginationLink>
                 </PaginationItem>
