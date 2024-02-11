@@ -98,8 +98,14 @@ export function ModelSelector({ models }: { models: Model[] }) {
         <PopoverTrigger asChild>
           <Button variant="outline" role="combobox" aria-expanded={open} aria-label="Select a model" className="w-full justify-between">
             <div className="flex items-center">
-              {peekedModel.provider === "openai" ? <OpenAI className="h-4 w-4 mr-1" /> : <HF className="h-4 w-4 mr-1" />}
-              {selectedModel ? selectedModel : "モデルを検索..."}
+              {selectedModel.provider === "openai" ? (
+                <OpenAI className="h-4 w-4 mr-1" />
+              ) : selectedModel.provider === "huggingface" ? (
+                <HF className="h-4 w-4 mr-1" />
+              ) : (
+                ""
+              )}
+              {selectedModel ? selectedModel.name : "モデルを検索..."}
             </div>
             <ChevronUp className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -125,10 +131,10 @@ export function ModelSelector({ models }: { models: Model[] }) {
                     <ModelItem
                       key={model.id}
                       model={model}
-                      isSelected={selectedModel === model.name}
+                      isSelected={selectedModel.name === model.name}
                       onPeek={(model) => setPeekedModel(model)}
                       onSelect={() => {
-                        setSelectedModel(model.name);
+                        setSelectedModel(model);
                         setOpen(false);
                       }}
                     />
