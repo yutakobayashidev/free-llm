@@ -1,6 +1,6 @@
 # free-llm
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyutakobayashidev%2Ffree-llm&env=OPENAI_API_KEY,AUTH_SECRET,DISCORD_CLIENT_ID,DISCORD_CLIENT_SECRET,DISCORD_GUILD_ID,POSTGRES_URL&envDescription=Discord%E3%81%AEOauth%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%84Neon%E3%81%AEPostgress%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9%E3%82%92%E8%A8%98%E8%BC%89%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&project-name=free-llm&repository-name=free-llm)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyutakobayashidev%2Ffree-llm&env=OPENAI_API_KEY,HUGGINGFACE_API_KEY,AUTH_SECRET,DISCORD_CLIENT_ID,DISCORD_CLIENT_SECRET,DISCORD_GUILD_ID,POSTGRES_URL&envDescription=Discord%E3%81%AEOauth%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%84Neon%E3%81%AEPostgress%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9%E3%82%92%E8%A8%98%E8%BC%89%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&project-name=free-llm&repository-name=free-llm)
 
 これは、[YUTA STUDIO (Discordサーバー)](https://discord.gg/N9qGDX7k9U)に参加しているDiscordユーザー限定で無料で利用できるLLMサービスです。金銭的な理由、または他の制約で高度な言語モデルを使用できない場合などの機会損失を防ぐために作られました。 OpenAIやオープンソースモデルなどが利用できます。
 
