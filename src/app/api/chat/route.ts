@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       title,
       userId,
       createdAt: new Date(Date.now()),
-      publishStatus: "private",
+      publishStatus: "guild",
     })
     .onConflictDoNothing({ target: schema.messages.id });
 

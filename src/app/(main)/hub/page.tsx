@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/pagination";
 import { db } from "@/db/client";
 import * as schema from "@/db/schema";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { desc, eq, or, sql } from "drizzle-orm";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
@@ -81,12 +81,12 @@ export default async function Page({ searchParams }: SearchParamsProps) {
   const endPage = Math.min(numberOfPages, safePageNumber + 1);
 
   return (
-    <div className="main-content w-full overflow-y-auto py-8 px-10">
+    <div className="main-content w-full overflow-y-auto py-8 px-4">
       <h1 className="text-2xl mb-5 font-bold leading-tight tracking-tighter md:text-4xl lg:leading-[1.1]">Message Hub</h1>
       <p className="mb-5">公開・サーバーの参加者限定のチャット一覧</p>
       <div className="space-y-5 mb-5">
         {chats.map((chat) => (
-          <Link href={`/share/${chat.id}`} className="flex justify-between items-center" key={chat.id}>
+          <Link href={`/hub/${chat.id}`} className="flex justify-between items-center" key={chat.id}>
             <div className="gap-x-3 flex items-center">
               <img
                 className="w-10 rounded-sm border h-10"
@@ -102,7 +102,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
                 <p className="text-gray-500">{chat.messages.length}</p>
               </div>
               <div
-                className={clsx(
+                className={cn(
                   {
                     "bg-blue-200 text-blue-500": chat.publishStatus === "guild",
                     "bg-purple-200 text-purple-500": chat.publishStatus === "public",
@@ -131,7 +131,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
                 <PaginationItem key={page}>
                   <PaginationLink
                     href={`/hub?page=${page}`}
-                    className={clsx({ "bg-primary hover:bg-primary/90 hover:text-white text-white": page === safePageNumber })}
+                    className={cn({ "bg-primary hover:bg-primary/90 hover:text-white text-white": page === safePageNumber })}
                   >
                     {page}
                   </PaginationLink>

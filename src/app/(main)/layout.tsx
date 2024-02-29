@@ -27,10 +27,8 @@ export default async function RootLayout({
   });
 
   return (
-    <div className="flex min-h-screen">
-      <ChatLayout user={session.user} chats={chats}>
-        {children}
-      </ChatLayout>
-    </div>
+    <ChatLayout user={session.user} chats={chats}>
+      {children}
+    </ChatLayout>
   );
 }

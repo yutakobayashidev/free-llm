@@ -31,7 +31,7 @@ export default async function Page({
   });
 
   if (chat?.publishStatus === "guild" && !session?.user) {
-    redirect(`/login?next=/share/${params.id}`);
+    redirect(`/login?next=/hub/${params.id}`);
   }
 
   if (!chat) {

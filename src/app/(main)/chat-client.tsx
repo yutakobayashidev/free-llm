@@ -2,13 +2,13 @@
 
 import { updatePublishStatus } from "@/app/actions";
 import Discord from "@/assets/logos/discord-mark-white.svg";
+import { MobileHeader } from "@/components/mobile-header";
 import { buttonVariants } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
 import { Chat } from "@/types";
 import { PublishStatus } from "@/types";
@@ -26,7 +26,11 @@ export default function ChatLayout({ chats, user, children }: { chats?: Chat[]; 
   const [openSystemModal, setSystemModal] = useState(false);
 
   const router = useRouter();
-  const path = usePathname();
+  let path = usePathname();
+
+  if (path.includes("/hub/")) {
+    path = "/hub";
+  }
 
   const publishStatus = async (id: string, status: PublishStatus) => {
     await updatePublishStatus(id, status);
@@ -60,15 +64,9 @@ export default function ChatLayout({ chats, user, children }: { chats?: Chat[]; 
 
   return (
     <>
-      <ResizablePanelGroup className="flex h-full" direction="horizontal">
-        <ResizablePanel
-          className="bg-[#F9F9F9] min-h-screen"
-          defaultSize={20}
-          collapsedSize={4}
-          collapsible={true}
-          minSize={15}
-          maxSize={20}
-        >
+      <MobileHeader chats={chats} />
+      <div className="relative z-0 flex h-full w-full overflow-hidden">
+        <div className="bg-[#F9F9F9] w-[260px] overflow-x-hidden force-scrollbar overflow-y-auto md:overflow-y-hidden min-h-screen hidden md:block">
           <div className="px-4 py-6 flex flex-col gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -218,12 +216,9 @@ export default function ChatLayout({ chats, user, children }: { chats?: Chat[]; 
               </div>
             </div>
           )}
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel className="min-h-screen" defaultSize={80}>
-          {children}
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+        <div className="relative flex h-full max-w-full flex-1 flex-col overflow-hidden">{children}</div>
+      </div>
       <APIDialog />
       <SystemPrompt openSystemModal={openSystemModal} setOpenSystemModal={setSystemModal} />
     </>

@@ -243,7 +243,7 @@ export default function Chat({ session, id, initialMessages }: { session: Sessio
 
   return (
     <>
-      <div className="main-content w-full overflow-y-auto py-5 px-10">
+      <div className="w-full overflow-y-auto py-8 px-4">
         <ModelSelector models={models} />
         <div className="mt-6">
           {messages.length === 0 ? (

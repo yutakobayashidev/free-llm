@@ -1,5 +1,5 @@
-import OpenAI from "@/assets/logos/openai.svg";
 import type { Message as MessageType } from "ai";
+import { Bot } from "lucide-react";
 import { UserRound } from "lucide-react";
 import { Session } from "next-auth";
 import Markdown from "react-markdown";
@@ -16,7 +16,7 @@ export default function Message({
       {message.role === "assistant" ? (
         <div className="flex items-start justify-start">
           <div className="h-10 border mr-3 flex rounded justify-center items-center w-10">
-            <OpenAI className="h-6 w-6" />
+            <Bot className="h-6 w-6" />
           </div>
           <Markdown
             components={{

@@ -1,4 +1,15 @@
-export const siteConfig = {
+type SiteConfig = {
+  name: string;
+  url: string;
+  description: string;
+  serverIconUrl: string;
+  links: {
+    github: string;
+    invite?: string;
+  };
+};
+
+export const siteConfig: SiteConfig = {
   name: "YUTA SDTUIO",
   url: "https://chatbot.yutakobayashi.dev/",
   description:
