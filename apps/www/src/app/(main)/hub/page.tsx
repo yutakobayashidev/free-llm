@@ -26,7 +26,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
 
   const pageNumber = Number(searchParams.page ?? 1);
 
-  const numberOfItems = 6;
+  const numberOfItems = 9;
 
   const totalChats = await db
     .select({ count: sql<number>`count(*)` })
@@ -55,7 +55,7 @@ export default async function Page({ searchParams }: SearchParamsProps) {
       messages: true,
     },
     offset: offsetItems,
-    limit: 10,
+    limit: numberOfItems,
   });
 
   const prevSearchParams = new URLSearchParams();
